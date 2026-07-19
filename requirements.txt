@@ -1,0 +1,19 @@
+# AI Center of Excellence - Edge AI Driver Monitoring System
+# Core dependencies for Renesas R-Car / Linux / 4 GB RAM
+
+# Computer Vision
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Face Landmark Detection (MediaPipe)
+# Pin to 0.10.14: the legacy `solutions.face_mesh` API was removed in 0.10.20+
+mediapipe==0.10.14
+
+# Object Detection (YOLO)
+ultralytics>=8.0.0
+
+# UI / SSE bridge (Flask)
+flask>=2.3.0
+
+# Optional: only needed when LLM_ENABLED=True (driver Q&A)
+# llama-cpp-python>=0.2.0
