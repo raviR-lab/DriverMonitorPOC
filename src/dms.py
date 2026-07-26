@@ -343,6 +343,12 @@ class DriverMonitoringSystem:
                     [(int(lm.x * pw), int(lm.y * ph)) for lm in face.landmark]
                 )
 
+                sx, sy = w / pw, h / ph
+                for idx in [33, 160, 158, 133, 153, 144, 362, 385, 387, 263, 373, 380]:
+                    cv2.circle(out, (int(landmarks[idx][0] * sx), int(landmarks[idx][1] * sy)), 3, (0, 255, 0), -1)
+                for idx in [81, 178, 13, 14, 311, 402, 61, 291]:
+                    cv2.circle(out, (int(landmarks[idx][0] * sx), int(landmarks[idx][1] * sy)), 3, (0, 255, 255), -1)
+
                 # EAR — start/end a time-based window when eyes are below threshold
                 ear = self._ear(landmarks)
                 if ear < EAR_THRESHOLD:
@@ -427,6 +433,17 @@ class DriverMonitoringSystem:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
         cv2.putText(img, f"Frame: {frame_index}", (10, h - 14),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 180, 180), 1)
+
+        rules = [
+            f"EAR<{EAR_THRESHOLD}>{EAR_CONSEC_SECS}s DROWSY",
+            f"MAR>{MAR_THRESHOLD}>{MAR_CONSEC_SECS}s YAWN",
+            f"Yaw>{HEAD_YAW_THRESHOLD} or Pitch>{HEAD_PITCH_THRESHOLD}>{GAZE_AWAY_CONSEC_SECS}s DISTR",
+            f"No face>{NO_FACE_CONSEC_SECS}s ALERT",
+        ]
+        for i, r in enumerate(rules):
+            tw, _ = cv2.getTextSize(r, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
+            cv2.putText(img, r, (w - tw - 10, h - 14 - i * 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 180, 180), 1)
 
     # ────────────────── helpers for UI server ──────────────────
     def ask(self, question: str) -> DMSEvent:
